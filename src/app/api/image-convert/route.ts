@@ -5,6 +5,7 @@ import sharp from 'sharp';
 // Configure route for Node.js runtime (required for sharp)
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60; // Max execution time in seconds for Vercel
 
 interface CropRect {
   type: 'rect';
