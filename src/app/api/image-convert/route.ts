@@ -510,34 +510,10 @@ async function processAndRespond(fileBuffer: Buffer, opts: ProcessOptions, filen
           const maskSvg = `<svg width="${extractBox.width}" height="${extractBox.height}" xmlns="http://www.w3.org/2000/svg"><rect width="${extractBox.width}" height="${extractBox.height}" fill="white"/>${allShapes.join('')}</svg>`;
           maskBuffer = await sharp(Buffer.from(maskSvg)).png().toBuffer();
         } else {
-          // Calculate bounding box
-          const xs = allPoints.map(p => p.x);
-          const ys = allPoints.map(p => p.y);
-          const minX = Math.max(0, Math.floor(Math.min(...xs)));
-          const minY = Math.max(0, Math.floor(Math.min(...ys)));
-          const maxX = Math.min(wMet, Math.ceil(Math.max(...xs)));
-          const maxY = Math.min(hMet, Math.ceil(Math.max(...ys)));
-          
-          extractBox = { left: minX, top: minY, width: Math.max(1, maxX - minX), height: Math.max(1, maxY - minY) };
-          
-          // Adjust shapes to bounding box coordinates
-          const adjustedShapes = allShapes.map(shape => {
-            // Adjust coordinates relative to extractBox
-            return shape
-              .replace(/x="([^"]+)"/g, (_, val) => `x="${parseFloat(val) - minX}"`)
-              .replace(/y="([^"]+)"/g, (_, val) => `y="${parseFloat(val) - minY}"`)
-              .replace(/cx="([^"]+)"/g, (_, val) => `cx="${parseFloat(val) - minX}"`)
-              .replace(/cy="([^"]+)"/g, (_, val) => `cy="${parseFloat(val) - minY}"`)
-              .replace(/points="([^"]+)"/g, (_, val) => {
-                const adjustedPoints = val.split(' ').map((pair: string) => {
-                  const [x, y] = pair.split(',').map(parseFloat);
-                  return `${x - minX},${y - minY}`;
-                }).join(' ');
-                return `points="${adjustedPoints}"`;
-              });
-          });
-          
-          const maskSvg = `<svg width="${extractBox.width}" height="${extractBox.height}" xmlns="http://www.w3.org/2000/svg">${adjustedShapes.join('')}</svg>`;
+          // For non-inverted multi-mode, use full image dimensions and don't adjust coordinates
+          // This ensures all shapes are rendered in their original positions
+          extractBox = { left: 0, top: 0, width: wMet, height: hMet };
+          const maskSvg = `<svg width="${extractBox.width}" height="${extractBox.height}" xmlns="http://www.w3.org/2000/svg">${allShapes.join('')}</svg>`;
           maskBuffer = await sharp(Buffer.from(maskSvg)).png().toBuffer();
         }
       }
