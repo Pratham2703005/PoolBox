@@ -2,6 +2,10 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import sharp from 'sharp';
 
+// Configure route for Node.js runtime (required for sharp)
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 interface CropRect {
   type: 'rect';
   data: {
