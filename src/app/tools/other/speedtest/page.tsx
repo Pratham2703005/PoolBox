@@ -21,21 +21,13 @@ const SpeedTestApp = () => {
   const [currentUpload, setCurrentUpload] = useState<string>('0');
   const [currentPing, setCurrentPing] = useState<string>('0');
 
-  // Use multiple CDN endpoints like Fast.com does with Netflix CDN
-  const CDN_ENDPOINTS = [
-    'https://cloudflare.com/cdn-cgi/trace',
-    'https://speed.cloudflare.com/__down',
-    'https://proof.ovh.net/files/',
-  ];
-
-  const PARALLEL_CONNECTIONS = 6; // Fast.com uses 6-8 connections
-  const TEST_DURATION = 10000; // 10 seconds like Fast.com
+  const PARALLEL_CONNECTIONS = 6;
+  const TEST_DURATION = 10000;
 
   const measurePing = async (): Promise<number> => {
     const pings: number[] = [];
     const endpoint = 'https://cloudflare.com/cdn-cgi/trace';
     
-    // Warm up
     await fetch(endpoint, { cache: 'no-store' }).catch(() => {});
     
     for (let i = 0; i < 8; i++) {
@@ -69,19 +61,17 @@ const SpeedTestApp = () => {
   };
 
   const measureDownloadSpeed = async (): Promise<number> => {
-    // Progressive test like Fast.com: start small, ramp up
     const sizes = [
-      1000000,   // 1MB warm-up
-      5000000,   // 5MB
-      10000000,  // 10MB
-      25000000,  // 25MB - this is where real speed shows
+      1000000,
+      5000000,
+      10000000,
+      25000000,
     ];
     
     const allSpeeds: number[] = [];
     const testStartTime = Date.now();
     
     for (const size of sizes) {
-      // Check if we've exceeded test duration
       if (Date.now() - testStartTime > TEST_DURATION) {
         break;
       }
@@ -89,13 +79,11 @@ const SpeedTestApp = () => {
       const speeds: number[] = [];
       
       try {
-        // Multiple parallel connections like Fast.com
         const downloadPromises = Array(PARALLEL_CONNECTIONS).fill(0).map(async (_, connIndex) => {
           const start = performance.now();
           let bytesReceived = 0;
           
           try {
-            // Use Cloudflare's speed test endpoint
             const url = `https://speed.cloudflare.com/__down?bytes=${size}`;
             
             const response = await fetch(url, {
@@ -118,14 +106,12 @@ const SpeedTestApp = () => {
             let lastUpdateTime = connectionStart;
             
             while (true) {
-              const readStart = performance.now();
               const { done, value } = await reader.read();
               
               if (done) break;
               
               bytesReceived += value.length;
               
-              // Update UI frequently during active download
               const now = performance.now();
               if (now - lastUpdateTime > 100) {
                 const elapsed = (now - connectionStart) / 1000;
@@ -133,7 +119,6 @@ const SpeedTestApp = () => {
                   const currentSpeed = (bytesReceived * 8) / elapsed / 1000000;
                   speeds.push(currentSpeed);
                   
-                  // Show current speed from all connections
                   if (speeds.length > 0) {
                     const avgSpeed = speeds.reduce((a, b) => a + b, 0) / speeds.length;
                     const scaledSpeed = avgSpeed * PARALLEL_CONNECTIONS;
@@ -143,7 +128,6 @@ const SpeedTestApp = () => {
                 lastUpdateTime = now;
               }
               
-              // Break if test duration exceeded
               if (Date.now() - testStartTime > TEST_DURATION) {
                 reader.cancel();
                 break;
@@ -161,17 +145,15 @@ const SpeedTestApp = () => {
         const totalBytes = results.reduce((a, b) => a + b, 0);
         
         if (totalBytes > 0 && speeds.length > 0) {
-          // Take the median of the last few measurements
           const recentSpeeds = speeds.slice(-10);
           recentSpeeds.sort((a, b) => a - b);
           const median = recentSpeeds[Math.floor(recentSpeeds.length / 2)];
           const scaledSpeed = median * PARALLEL_CONNECTIONS;
           allSpeeds.push(scaledSpeed);
           
-          console.log(`Test ${size / 1000000}MB: ${scaledSpeed.toFixed(2)} Mbps`);
+          console.log(`Download test ${size / 1000000}MB: ${scaledSpeed.toFixed(2)} Mbps`);
         }
         
-        // Small delay between tests
         await new Promise(resolve => setTimeout(resolve, 300));
         
       } catch (err) {
@@ -183,16 +165,31 @@ const SpeedTestApp = () => {
       throw new Error('Download test failed. Please check your internet connection.');
     }
     
-    // Take the maximum speed from larger files (like Fast.com does)
     return Math.max(...allSpeeds);
   };
 
   const measureUploadSpeed = async (): Promise<number> => {
-    // Upload test using httpbin or similar service
+    // Check if we have our own API endpoint
+    const hasOwnAPI = await fetch('/api/speedtest/upload', { method: 'HEAD' })
+      .then(res => res.ok)
+      .catch(() => false);
+    
+    if (hasOwnAPI) {
+      // Use our own API if available
+      return await measureUploadWithOwnAPI();
+    } else {
+      // Fallback to estimation if no API
+      console.warn('Upload API not available, estimating based on typical ratios');
+      return 0;
+    }
+  };
+
+  const measureUploadWithOwnAPI = async (): Promise<number> => {
     const sizes = [
-      250000,   // 250KB warm-up
-      500000,   // 500KB
-      1000000,  // 1MB
+      250000,
+      500000,
+      1000000,
+      2000000,
     ];
     
     const allSpeeds: number[] = [];
@@ -201,10 +198,8 @@ const SpeedTestApp = () => {
       try {
         const speeds: number[] = [];
         
-        // Multiple parallel uploads
-        const uploadPromises = Array(Math.min(PARALLEL_CONNECTIONS, 3)).fill(0).map(async (_, connIndex) => {
+        const uploadPromises = Array(Math.min(PARALLEL_CONNECTIONS, 4)).fill(0).map(async (_, connIndex) => {
           try {
-            // Generate random data
             const data = new Uint8Array(size);
             const chunkSize = 65536;
             for (let i = 0; i < size; i += chunkSize) {
@@ -214,8 +209,8 @@ const SpeedTestApp = () => {
             
             const start = performance.now();
             
-            // Try httpbin.org for upload
-            const response = await fetch('https://httpbin.org/post', {
+            // Use our own API endpoint
+            const response = await fetch('/api/speedtest/upload', {
               method: 'POST',
               body: data,
               cache: 'no-store',
@@ -225,7 +220,7 @@ const SpeedTestApp = () => {
             });
             
             if (!response.ok) {
-              console.warn(`Upload connection ${connIndex} failed`);
+              console.warn(`Upload connection ${connIndex} failed:`, response.status);
               return 0;
             }
             
@@ -236,10 +231,9 @@ const SpeedTestApp = () => {
             const mbps = (size * 8) / duration / 1000000;
             speeds.push(mbps);
             
-            // Update UI
             if (speeds.length > 0) {
               const avgSpeed = speeds.reduce((a, b) => a + b, 0) / speeds.length;
-              const scaledSpeed = avgSpeed * Math.min(PARALLEL_CONNECTIONS, 3);
+              const scaledSpeed = avgSpeed * Math.min(PARALLEL_CONNECTIONS, 4);
               setCurrentUpload(scaledSpeed.toFixed(2));
             }
             
@@ -267,9 +261,7 @@ const SpeedTestApp = () => {
       }
     }
     
-    // If upload tests failed, estimate as 1/10 of download (typical ratio)
     if (allSpeeds.length === 0) {
-      console.warn('Upload test unavailable due to CORS. This is a browser limitation.');
       return 0;
     }
     
@@ -286,28 +278,32 @@ const SpeedTestApp = () => {
     setCurrentPing('0');
 
     try {
-      // Ping test
       setTestPhase('Measuring latency...');
       setProgress(10);
       const ping = await measurePing();
       setCurrentPing(ping.toFixed(1));
       setProgress(20);
 
-      // Download test (main test)
       setTestPhase('Testing download speed (6 parallel connections)...');
       setProgress(25);
       const downloadSpeed = await measureDownloadSpeed();
       setProgress(70);
 
-      // Upload test
       setTestPhase('Testing upload speed...');
       setProgress(75);
       let uploadSpeed = 0;
+      let uploadStatus = '';
+      
       try {
         uploadSpeed = await measureUploadSpeed();
+        if (uploadSpeed === 0) {
+          uploadSpeed = downloadSpeed / 10;
+          uploadStatus = ' (estimated)';
+        }
       } catch (err) {
         console.warn('Upload test failed, using estimation');
-        uploadSpeed = downloadSpeed / 10; // Typical upload is 1/10 of download
+        uploadSpeed = downloadSpeed / 10;
+        uploadStatus = ' (estimated)';
       }
       setProgress(95);
 
@@ -316,7 +312,7 @@ const SpeedTestApp = () => {
 
       setSpeedData({
         downloadSpeed: downloadSpeed.toFixed(2),
-        uploadSpeed: uploadSpeed > 0 ? uploadSpeed.toFixed(2) : 'N/A',
+        uploadSpeed: uploadSpeed > 0 ? uploadSpeed.toFixed(2) + uploadStatus : 'N/A',
         ping: ping.toFixed(1),
         server: 'Cloudflare CDN',
         method: 'Multi-connection CDN test'
@@ -350,11 +346,11 @@ const SpeedTestApp = () => {
               <div>
                 <p className="text-sm font-semibold text-blue-800">How This Works</p>
                 <ul className="text-xs text-blue-700 mt-1 space-y-1">
-                  <li>✓ Uses Cloudflare CDN (similar to Netflix CDN that Fast.com uses)</li>
-                  <li>✓ 6 parallel connections for accurate bandwidth saturation</li>
+                  <li>✓ Uses Cloudflare CDN for accurate download testing</li>
+                  <li>✓ 6 parallel connections for bandwidth saturation</li>
                   <li>✓ Progressive file sizes with TCP warm-up</li>
-                  <li>✓ No backend required - pure client-side testing</li>
-                  <li>⚠ Upload may be limited due to browser CORS restrictions</li>
+                  <li>⚠ Upload requires backend API for accurate results</li>
+                  <li className="text-amber-700 font-semibold">💡 Create /api/speedtest/upload endpoint for accurate upload testing</li>
                 </ul>
               </div>
             </div>
