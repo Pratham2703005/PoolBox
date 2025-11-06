@@ -1,6 +1,6 @@
 "use client";
-import React, { useState } from 'react';
-import { Wifi, Download, Upload, Activity, AlertCircle, RefreshCw, Info, Zap } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Download, Upload, Activity, AlertCircle, RefreshCw, Zap } from 'lucide-react';
 import RadialGauge from '@/components/tools/speedtest/RadialGauge';
 
 interface SpeedData {
@@ -24,31 +24,41 @@ const SpeedTestApp = () => {
 
   const PARALLEL_CONNECTIONS = 6;
   const TEST_DURATION = 10000;
+  const controllerRef = useRef<AbortController | null>(null);
+
+  // Helper to check if error is an AbortError
+  const isAbortError = (err: unknown): boolean => {
+    return err instanceof Error && err.name === 'AbortError';
+  };
 
   const measurePing = async (): Promise<number> => {
     const pings: number[] = [];
     const endpoint = 'https://cloudflare.com/cdn-cgi/trace';
     
-    await fetch(endpoint, { cache: 'no-store' }).catch(() => {});
-    
+    const signal = controllerRef.current?.signal;
+    await fetch(endpoint, { cache: 'no-store', signal }).catch(() => {});
+
     for (let i = 0; i < 8; i++) {
       const start = performance.now();
       try {
-        await fetch(endpoint, { 
+        await fetch(endpoint, {
           method: 'HEAD',
-          cache: 'no-store'
+          cache: 'no-store',
+          signal,
         });
         const end = performance.now();
         pings.push(end - start);
-        
+
         if (pings.length > 2) {
           const recent = pings.slice(-4);
           const avg = recent.reduce((a, b) => a + b, 0) / recent.length;
           setCurrentPing(avg.toFixed(1));
         }
       } catch (err) {
+        if (isAbortError(err)) throw err;
         console.warn('Ping error:', err);
       }
+      if (signal?.aborted) break;
       await new Promise(resolve => setTimeout(resolve, 100));
     }
     
@@ -72,7 +82,8 @@ const SpeedTestApp = () => {
     const allSpeeds: number[] = [];
     const testStartTime = Date.now();
     
-    for (const size of sizes) {
+  const signal = controllerRef.current?.signal;
+  for (const size of sizes) {
       if (Date.now() - testStartTime > TEST_DURATION) {
         break;
       }
@@ -81,7 +92,6 @@ const SpeedTestApp = () => {
       
       try {
         const downloadPromises = Array(PARALLEL_CONNECTIONS).fill(0).map(async (_, connIndex) => {
-          const start = performance.now();
           let bytesReceived = 0;
           
           try {
@@ -92,7 +102,8 @@ const SpeedTestApp = () => {
               cache: 'no-store',
               headers: {
                 'Accept': '*/*',
-              }
+              },
+              signal
             });
             
             if (!response.ok) {
@@ -108,9 +119,10 @@ const SpeedTestApp = () => {
             
             while (true) {
               const { done, value } = await reader.read();
-              
+
               if (done) break;
-              
+              if (signal?.aborted) { reader.cancel(); break; }
+
               bytesReceived += value.length;
               
               const now = performance.now();
@@ -137,6 +149,7 @@ const SpeedTestApp = () => {
             
             return bytesReceived;
           } catch (err) {
+            if (isAbortError(err)) return 0;
             console.warn(`Connection ${connIndex} error:`, err);
             return 0;
           }
@@ -155,7 +168,8 @@ const SpeedTestApp = () => {
           console.log(`Download test ${size / 1000000}MB: ${scaledSpeed.toFixed(2)} Mbps`);
         }
         
-        await new Promise(resolve => setTimeout(resolve, 300));
+  await new Promise(resolve => setTimeout(resolve, 300));
+  if (signal?.aborted) break;
         
       } catch (err) {
         console.error('Download test error:', err);
@@ -171,9 +185,13 @@ const SpeedTestApp = () => {
 
   const measureUploadSpeed = async (): Promise<number> => {
     // Check if we have our own API endpoint
-    const hasOwnAPI = await fetch('/api/speedtest', { method: 'HEAD' })
+    const signal = controllerRef.current?.signal;
+    const hasOwnAPI = await fetch('/api/speedtest', { method: 'HEAD', signal })
       .then(res => res.ok)
-      .catch(() => false);
+      .catch((e) => {
+        if (isAbortError(e)) throw e;
+        return false;
+      });
     
     if (hasOwnAPI) {
       // Use our own API if available
@@ -194,6 +212,7 @@ const SpeedTestApp = () => {
     ];
     
     const allSpeeds: number[] = [];
+    const signal = controllerRef.current?.signal;
     
     for (const size of sizes) {
       try {
@@ -217,7 +236,8 @@ const SpeedTestApp = () => {
               cache: 'no-store',
               headers: {
                 'Content-Type': 'application/octet-stream'
-              }
+              },
+              signal
             });
             
             if (!response.ok) {
@@ -240,6 +260,7 @@ const SpeedTestApp = () => {
             
             return size;
           } catch (err) {
+            if (isAbortError(err)) return 0;
             console.warn(`Upload connection ${connIndex} error:`, err);
             return 0;
           }
@@ -257,7 +278,9 @@ const SpeedTestApp = () => {
         }
         
         await new Promise(resolve => setTimeout(resolve, 300));
+        if (signal?.aborted) break;
       } catch (err) {
+        if (isAbortError(err)) throw err;
         console.error('Upload test error:', err);
       }
     }
@@ -270,6 +293,10 @@ const SpeedTestApp = () => {
   };
 
   const runSpeedTest = async () => {
+    // create/replace abort controller for this run
+    controllerRef.current?.abort();
+    controllerRef.current = new AbortController();
+
     setLoading(true);
     setError(null);
     setProgress(0);
@@ -301,7 +328,7 @@ const SpeedTestApp = () => {
           uploadSpeed = downloadSpeed / 10;
           uploadStatus = ' (estimated)';
         }
-      } catch (err) {
+      } catch {
         console.warn('Upload test failed, using estimation');
         uploadSpeed = downloadSpeed / 10;
         uploadStatus = ' (estimated)';
@@ -321,12 +348,24 @@ const SpeedTestApp = () => {
 
       setLoading(false);
     } catch (err) {
+      if (isAbortError(err)) {
+        setTestPhase('Stopped');
+        setLoading(false);
+        return;
+      }
       const message = err instanceof Error ? err.message : 'Speed test failed. Please try again.';
       setError(message);
       console.error('Speed test error:', err);
       setLoading(false);
       setTestPhase('');
     }
+  };
+
+  const stopTest = () => {
+    controllerRef.current?.abort();
+    setLoading(false);
+    setTestPhase('Stopped');
+    setProgress(0);
   };
 
   return (
@@ -385,6 +424,16 @@ const SpeedTestApp = () => {
 
             {loading && (
               <div className="space-y-6 py-8">
+                <div className="flex items-center justify-between px-4">
+                  <div className="text-sm text-gray-300">{testPhase} — {progress}%</div>
+                  <button
+                    onClick={stopTest}
+                    className="text-sm px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700"
+                  >
+                    Stop
+                  </button>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <RadialGauge
                     value={parseFloat(currentDownload)}
