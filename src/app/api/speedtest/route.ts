@@ -1,9 +1,10 @@
+export const runtime = 'nodejs';
+export const maxDuration = 60;
+export const maxBodySize = '10mb';
 export async function POST(request: Request) {
   try {
-    // Read the uploaded data
     const data = await request.arrayBuffer();
     
-    // Just acknowledge receipt - this measures upload speed
     return new Response(
       JSON.stringify({ 
         received: data.byteLength,
@@ -15,6 +16,7 @@ export async function POST(request: Request) {
         headers: {
           'Content-Type': 'application/json',
           'Cache-Control': 'no-store',
+          'Access-Control-Allow-Origin': '*',
         }
       }
     );
@@ -34,17 +36,16 @@ export async function POST(request: Request) {
   }
 }
 
-// Add HEAD method support for API checking
 export async function HEAD() {
   return new Response(null, {
     status: 200,
     headers: {
       'Cache-Control': 'no-store',
+      'Access-Control-Allow-Origin': '*',
     }
   });
 }
 
-// Add GET method for health check
 export async function GET() {
   return new Response(
     JSON.stringify({ status: 'ok', endpoint: 'upload' }),
@@ -53,12 +54,12 @@ export async function GET() {
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-store',
+        'Access-Control-Allow-Origin': '*',
       }
     }
   );
 }
 
-// Add OPTIONS for CORS preflight
 export async function OPTIONS() {
   return new Response(null, {
     status: 200,
@@ -66,6 +67,7 @@ export async function OPTIONS() {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'POST, GET, HEAD, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
+      'Cache-Control': 'no-store',
     }
   });
 }
