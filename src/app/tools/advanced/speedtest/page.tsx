@@ -171,7 +171,7 @@ const SpeedTestApp = () => {
 
   const measureUploadSpeed = async (): Promise<number> => {
     // Check if we have our own API endpoint
-    const hasOwnAPI = await fetch('/api/speedtest/upload', { method: 'HEAD' })
+    const hasOwnAPI = await fetch('/api/speedtest', { method: 'HEAD' })
       .then(res => res.ok)
       .catch(() => false);
     
@@ -211,7 +211,7 @@ const SpeedTestApp = () => {
             const start = performance.now();
             
             // Use our own API endpoint
-            const response = await fetch('/api/speedtest/upload', {
+            const response = await fetch('/api/speedtest', {
               method: 'POST',
               body: data,
               cache: 'no-store',
