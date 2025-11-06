@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef } from 'react';
-import { Download, Upload, Activity, AlertCircle, RefreshCw, Zap } from 'lucide-react';
+import { Download, Upload, Activity, AlertCircle, RefreshCw, Zap, Pause } from 'lucide-react';
 import RadialGauge from '@/components/tools/speedtest/RadialGauge';
 
 interface SpeedData {
@@ -292,81 +292,80 @@ const SpeedTestApp = () => {
     return Math.max(...allSpeeds);
   };
 
-  const runSpeedTest = async () => {
-    // create/replace abort controller for this run
-    controllerRef.current?.abort();
-    controllerRef.current = new AbortController();
+const runSpeedTest = async () => {
+  controllerRef.current?.abort();
+  controllerRef.current = new AbortController();
 
-    setLoading(true);
-    setError(null);
-    setProgress(0);
-    setSpeedData(null);
-    setCurrentDownload('0');
-    setCurrentUpload('0');
-    setCurrentPing('0');
+  setLoading(true);
+  setError(null);
+  setProgress(0);
+  setSpeedData(null);
+  setCurrentDownload('0');
+  setCurrentUpload('0');
+  setCurrentPing('0');
+
+  try {
+    setTestPhase('Measuring latency...');
+    setProgress(10);
+    const ping = await measurePing();
+    setCurrentPing(ping.toFixed(1));
+    setProgress(20);
+
+    setTestPhase('Testing download speed (6 parallel connections)...');
+    setProgress(25);
+    const downloadSpeed = await measureDownloadSpeed();
+    setProgress(70);
+
+    setTestPhase('Testing upload speed...');
+    setProgress(75);
+    let uploadSpeed = 0;
+    let uploadStatus = '';
 
     try {
-      setTestPhase('Measuring latency...');
-      setProgress(10);
-      const ping = await measurePing();
-      setCurrentPing(ping.toFixed(1));
-      setProgress(20);
-
-      setTestPhase('Testing download speed (6 parallel connections)...');
-      setProgress(25);
-      const downloadSpeed = await measureDownloadSpeed();
-      setProgress(70);
-
-      setTestPhase('Testing upload speed...');
-      setProgress(75);
-      let uploadSpeed = 0;
-      let uploadStatus = '';
-      
-      try {
-        uploadSpeed = await measureUploadSpeed();
-        if (uploadSpeed === 0) {
-          uploadSpeed = downloadSpeed / 10;
-          uploadStatus = ' (estimated)';
-        }
-      } catch {
-        console.warn('Upload test failed, using estimation');
+      uploadSpeed = await measureUploadSpeed();
+      if (uploadSpeed === 0) {
         uploadSpeed = downloadSpeed / 10;
         uploadStatus = ' (estimated)';
       }
-      setProgress(95);
-
-      setTestPhase('Complete!');
-      setProgress(100);
-
-      setSpeedData({
-        downloadSpeed: downloadSpeed.toFixed(2),
-        uploadSpeed: uploadSpeed > 0 ? uploadSpeed.toFixed(2) + uploadStatus : 'N/A',
-        ping: ping.toFixed(1),
-        server: 'Cloudflare CDN',
-        method: 'Multi-connection CDN test'
-      });
-
-      setLoading(false);
-    } catch (err) {
-      if (isAbortError(err)) {
-        setTestPhase('Stopped');
-        setLoading(false);
-        return;
-      }
-      const message = err instanceof Error ? err.message : 'Speed test failed. Please try again.';
-      setError(message);
-      console.error('Speed test error:', err);
-      setLoading(false);
-      setTestPhase('');
+    } catch {
+      console.warn('Upload test failed, using estimation');
+      uploadSpeed = downloadSpeed / 10;
+      uploadStatus = ' (estimated)';
     }
-  };
+    setProgress(95);
 
-  const stopTest = () => {
-    controllerRef.current?.abort();
+    setTestPhase('Complete!');
+    setProgress(100);
+
+    setSpeedData({
+      downloadSpeed: downloadSpeed.toFixed(2),
+      uploadSpeed: uploadSpeed > 0 ? uploadSpeed.toFixed(2) + uploadStatus : 'N/A',
+      ping: ping.toFixed(1),
+      server: 'Cloudflare CDN',
+      method: 'Multi-connection CDN test'
+    });
+  } catch (err) {
+    if (isAbortError(err)) {
+      console.log('Speed test aborted by user.');
+      setTestPhase('Stopped');
+    } else {
+      console.error('Speed test error:', err);
+      setError('Test stopped or unstable connection. Please retry.');
+      setTestPhase('Error');
+    }
+  } finally {
+    // Small delay to prevent flicker before UI reset
+    await new Promise((r) => setTimeout(r, 200));
     setLoading(false);
-    setTestPhase('Stopped');
-    setProgress(0);
-  };
+  }
+};
+
+const stopTest = () => {
+  controllerRef.current?.abort();
+  setTestPhase('Stopping...');
+  // don’t reset immediately → let finally block handle it
+};
+
 
   return (
      
@@ -380,7 +379,7 @@ const SpeedTestApp = () => {
             </div>
           
 
-              {speedData && !loading && (
+              {speedData && !loading ? (
                 <div className="text-center">
                  <button
   onClick={runSpeedTest}
@@ -394,7 +393,20 @@ const SpeedTestApp = () => {
                     Retry
                   </button>
                 </div>
-              )}
+              ) : (
+                loading && (
+                <div className="text-center">
+                  <button
+                    onClick={stopTest}
+                    className="text-zinc-100 hover:text-white px-8 py-3 rounded-full font-semibold 
+             transition-all inline-flex items-center gap-2 
+             focus:outline-none focus:ring-0 focus:border-none 
+             ring-1 ring-gray-950 hover:bg-[rgba(3,7,18,0.5)] active:ring-0"
+                  >
+                    <Pause className="w-4 h-4" />
+                    Stop
+                  </button>
+                </div>))}
             
           </div>
 
@@ -424,15 +436,7 @@ const SpeedTestApp = () => {
 
             {loading && (
               <div className="space-y-6 py-8">
-                <div className="flex items-center justify-between px-4">
-                  <div className="text-sm text-gray-300">{testPhase} — {progress}%</div>
-                  <button
-                    onClick={stopTest}
-                    className="text-sm px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700"
-                  >
-                    Stop
-                  </button>
-                </div>
+                
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <RadialGauge
