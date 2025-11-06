@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { Wifi, Download, Upload, Activity, AlertCircle, RefreshCw, Info, Zap } from 'lucide-react';
+import RadialGauge from '@/components/tools/speedtest/RadialGauge';
 
 interface SpeedData {
   downloadSpeed: string;
@@ -329,164 +330,130 @@ const SpeedTestApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full">
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-8 text-white">
-            <div className="flex items-center justify-center mb-4">
-              <Zap className="w-12 h-12" />
+     
+        <div className="min-h-screen overflow-hidden bg-gray-900 max-w-7xl w-full mx-auto flex flex-col">
+          <div className="px-20 py-8 text-white flex justify-between">
+            <div className="flex items-center gap-4">
+              {/* <div className="flex items-center justify-center"> */}
+                <Zap className="w-8 h-8" />
+              {/* </div> */}
+              <h1 className="text-3xl font-bold text-center">Internet Speed Test</h1>
             </div>
-            <h1 className="text-3xl font-bold text-center">Speed Test</h1>
-            <p className="text-center text-purple-100 mt-2">Fast.com-style Multi-Connection Testing</p>
+          
+
+              {speedData && !loading && (
+                <div className="text-center">
+                 <button
+  onClick={runSpeedTest}
+  className="text-zinc-100 hover:text-white px-8 py-3 rounded-full font-semibold 
+             transition-all inline-flex items-center gap-2 
+             focus:outline-none focus:ring-0 focus:border-none 
+             ring-1 ring-gray-950 hover:bg-[rgba(3,7,18,0.5)] active:ring-0"
+>
+
+                    <RefreshCw className="w-4 h-4" />
+                    Retry
+                  </button>
+                </div>
+              )}
+            
           </div>
 
-          <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
-            <div className="flex items-start">
-              <Info className="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
-              <div>
-                <p className="text-sm font-semibold text-blue-800">How This Works</p>
-                <ul className="text-xs text-blue-700 mt-1 space-y-1">
-                  <li>✓ Uses Cloudflare CDN for accurate download testing</li>
-                  <li>✓ 6 parallel connections for bandwidth saturation</li>
-                  <li>✓ Progressive file sizes with TCP warm-up</li>
-                  <li>⚠ Upload requires backend API for accurate results</li>
-                  <li className="text-amber-700 font-semibold">💡 Create /api/speedtest/upload endpoint for accurate upload testing</li>
-                </ul>
-              </div>
-            </div>
-          </div>
 
-          <div className="p-8">
+      
+
+          <div className="h-full flex items-center justify-center flex-1">
             {!loading && !speedData && (
-              <div className="text-center">
-                <button
-                  onClick={runSpeedTest}
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-12 py-4 rounded-full text-xl font-semibold hover:from-purple-700 hover:to-indigo-700 transform hover:scale-105 transition-all shadow-lg"
-                >
-                  Start Test
-                </button>
-                <p className="text-gray-500 text-sm mt-4">
-                  Testing with Cloudflare&apos;s global CDN
-                </p>
-              </div>
+              
+                <div className='text-center'>
+                  <button
+                    onClick={runSpeedTest}
+                    className="text-zinc-100 hover:text-white px-8 py-3 rounded-full font-semibold 
+              transition-all inline-flex items-center gap-2 
+              focus:outline-none focus:ring-0 focus:border-none 
+              ring-1 ring-gray-950 hover:bg-[rgba(3,7,18,0.5)] active:ring-0 shadow-lg"
+                  >
+                    Start Test
+                  </button>
+                  <p className="text-gray-500 text-sm mt-4">
+                    Testing with Cloudflare&apos;s global CDN
+                  </p>
+
+                </div>
+            
             )}
 
             {loading && (
               <div className="space-y-6 py-8">
-                <div className="text-center">
-                  <div className="relative w-48 h-48 mx-auto mb-6">
-                    <svg className="w-full h-full transform -rotate-90">
-                      <circle cx="96" cy="96" r="88" stroke="#e5e7eb" strokeWidth="12" fill="none" />
-                      <circle
-                        cx="96" cy="96" r="88" stroke="#8b5cf6" strokeWidth="12" fill="none"
-                        strokeDasharray={`${2 * Math.PI * 88}`}
-                        strokeDashoffset={`${2 * Math.PI * 88 * (1 - progress / 100)}`}
-                        strokeLinecap="round"
-                        className="transition-all duration-500"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center">
-                        <Activity className="w-12 h-12 text-purple-600 mx-auto mb-2 animate-pulse" />
-                        <p className="text-3xl font-bold text-gray-700">{progress}%</p>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 text-lg font-medium mb-2">{testPhase}</p>
-                  <p className="text-gray-400 text-sm">Please wait...</p>
-                </div>
-
-                <div className="grid grid-cols-3 gap-4 max-w-xl mx-auto">
-                  <div className="bg-green-50 p-4 rounded-xl border-2 border-green-200">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Download className="w-5 h-5 text-green-600" />
-                      <span className="text-sm font-semibold text-green-700">Download</span>
-                    </div>
-                    <p className="text-2xl font-bold text-green-900">{currentDownload}</p>
-                    <p className="text-xs text-green-700">Mbps</p>
-                  </div>
-
-                  <div className="bg-blue-50 p-4 rounded-xl border-2 border-blue-200">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Upload className="w-5 h-5 text-blue-600" />
-                      <span className="text-sm font-semibold text-blue-700">Upload</span>
-                    </div>
-                    <p className="text-2xl font-bold text-blue-900">{currentUpload}</p>
-                    <p className="text-xs text-blue-700">Mbps</p>
-                  </div>
-
-                  <div className="bg-purple-50 p-4 rounded-xl border-2 border-purple-200">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Activity className="w-5 h-5 text-purple-600" />
-                      <span className="text-sm font-semibold text-purple-700">Ping</span>
-                    </div>
-                    <p className="text-2xl font-bold text-purple-900">{currentPing}</p>
-                    <p className="text-xs text-purple-700">ms</p>
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <RadialGauge
+                    value={parseFloat(currentDownload)}
+                    maxValue={100}
+                    label="Download"
+                    unit="Mbps"
+                    color="green"
+                    icon={<Download className="size-4" />}
+                  />
+                  <RadialGauge
+                    value={parseFloat(currentUpload)}
+                    maxValue={100}
+                    label="Upload"
+                    unit="Mbps"
+                    color="blue"
+                    icon={<Upload className="size-4" />}
+                  />
+                  <RadialGauge
+                    value={parseFloat(currentPing)}
+                    maxValue={100}
+                    label="Ping"
+                    unit="ms"
+                    color="purple"
+                    icon={<Activity className="size-4" />}
+                  />
                 </div>
               </div>
             )}
 
             {speedData && !loading && (
               <div className="space-y-6">
-                <div className="text-center mb-6">
-                  <p className="text-5xl font-bold text-gray-900 mb-2">
-                    {speedData.downloadSpeed}
-                    <span className="text-3xl text-gray-600 ml-2">Mbps</span>
-                  </p>
-                  <p className="text-gray-500">Your internet speed</p>
+                {/* Radial Gauge Display */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                  <RadialGauge
+                    value={parseFloat(speedData.downloadSpeed)}
+                    maxValue={100}
+                    label="Download Speed"
+                    unit="Mbps"
+                    color="green"
+                    icon={<Download className="size-4" />}
+                  />
+                  <RadialGauge
+                    value={parseFloat(speedData.uploadSpeed.split(' ')[0])}
+                    maxValue={100}
+                    label="Upload Speed"
+                    unit="Mbps"
+                    color="blue"
+                    icon={<Upload className="size-4" />}
+                  />
+                  <RadialGauge
+                    value={parseFloat(speedData.ping)}
+                    maxValue={100}
+                    label="Latency"
+                    unit="ms"
+                    color="purple"
+                    icon={<Activity className="size-4" />}
+                  />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-2xl border-2 border-green-200">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-green-700 font-semibold">Download</span>
-                      <Download className="w-6 h-6 text-green-600" />
-                    </div>
-                    <p className="text-4xl font-bold text-green-900">{speedData.downloadSpeed}</p>
-                    <p className="text-green-700 mt-1">Mbps</p>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl border-2 border-blue-200">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-blue-700 font-semibold">Upload</span>
-                      <Upload className="w-6 h-6 text-blue-600" />
-                    </div>
-                    <p className="text-4xl font-bold text-blue-900">{speedData.uploadSpeed}</p>
-                    <p className="text-blue-700 mt-1">Mbps</p>
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-2xl border-2 border-purple-200">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-purple-700 font-semibold block mb-2">Latency</span>
-                      <p className="text-3xl font-bold text-purple-900">
-                        {speedData.ping} <span className="text-xl">ms</span>
-                      </p>
-                    </div>
-                    <Activity className="w-8 h-8 text-purple-600" />
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 p-4 rounded-xl">
-                  <p className="text-sm text-gray-600">
+                <div className="bg-zinc-900 p-4 rounded-xl outline-1 outline-white">
+                  <p className="text-sm text-gray-300">
                     <span className="font-semibold">Server:</span> {speedData.server}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-300">
                     <span className="font-semibold">Method:</span> {speedData.method}
                   </p>
                 </div>
 
-                <div className="text-center pt-4">
-                  <button
-                    onClick={runSpeedTest}
-                    className="bg-gray-200 text-gray-700 px-8 py-3 rounded-full font-semibold hover:bg-gray-300 transition-all inline-flex items-center gap-2"
-                  >
-                    <RefreshCw className="w-4 h-4" />
-                    Test Again
-                  </button>
-                </div>
+                
               </div>
             )}
 
@@ -504,14 +471,8 @@ const SpeedTestApp = () => {
               </div>
             )}
           </div>
-        </div>
+        </div>  
 
-        <div className="text-center mt-6 text-white text-sm opacity-80">
-          <p>Speed test powered by Cloudflare CDN</p>
-          <p className="mt-1">Uses multiple connections like Fast.com</p>
-        </div>
-      </div>
-    </div>
   );
 };
 

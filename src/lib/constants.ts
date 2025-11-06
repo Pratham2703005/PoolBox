@@ -248,6 +248,16 @@ export const TOOLS: Tool[] = [
 
   // Advanced Tools
   {
+    id: "speedtest",
+    name: "Internet Speed Test",
+    description: "Test your internet speed with visual gauges powered by Cloudflare",
+    category: "advanced",
+    icon: "📡",
+    href: "/tools/advanced/speedtest",
+    tags: ["speed", "internet", "network", "bandwidth", "download", "upload", "ping"],
+    featured: true,
+  },
+  {
     id: "currency-converter",
     name: "Currency Converter",
     description: "Live currency conversion with real-time exchange rates",
