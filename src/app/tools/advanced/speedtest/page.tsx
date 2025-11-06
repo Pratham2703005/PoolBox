@@ -15,8 +15,6 @@ const SpeedTestApp = () => {
   const [speedData, setSpeedData] = useState<SpeedData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [testPhase, setTestPhase] = useState('');
-  const [progress, setProgress] = useState(0);
   
   const [currentDownload, setCurrentDownload] = useState<string>('0');
   const [currentUpload, setCurrentUpload] = useState<string>('0');
@@ -298,26 +296,16 @@ const runSpeedTest = async () => {
 
   setLoading(true);
   setError(null);
-  setProgress(0);
   setSpeedData(null);
   setCurrentDownload('0');
   setCurrentUpload('0');
   setCurrentPing('0');
 
   try {
-    setTestPhase('Measuring latency...');
-    setProgress(10);
     const ping = await measurePing();
     setCurrentPing(ping.toFixed(1));
-    setProgress(20);
 
-    setTestPhase('Testing download speed (6 parallel connections)...');
-    setProgress(25);
     const downloadSpeed = await measureDownloadSpeed();
-    setProgress(70);
-
-    setTestPhase('Testing upload speed...');
-    setProgress(75);
     let uploadSpeed = 0;
     let uploadStatus = '';
 
@@ -332,10 +320,6 @@ const runSpeedTest = async () => {
       uploadSpeed = downloadSpeed / 10;
       uploadStatus = ' (estimated)';
     }
-    setProgress(95);
-
-    setTestPhase('Complete!');
-    setProgress(100);
 
     setSpeedData({
       downloadSpeed: downloadSpeed.toFixed(2),
@@ -347,11 +331,9 @@ const runSpeedTest = async () => {
   } catch (err) {
     if (isAbortError(err)) {
       console.log('Speed test aborted by user.');
-      setTestPhase('Stopped');
     } else {
       console.error('Speed test error:', err);
       setError('Test stopped or unstable connection. Please retry.');
-      setTestPhase('Error');
     }
   } finally {
     // Small delay to prevent flicker before UI reset
@@ -362,20 +344,18 @@ const runSpeedTest = async () => {
 
 const stopTest = () => {
   controllerRef.current?.abort();
-  setTestPhase('Stopping...');
-  // don’t reset immediately → let finally block handle it
 };
 
 
   return (
      
         <div className="min-h-screen overflow-hidden bg-gray-900 max-w-7xl w-full mx-auto flex flex-col">
-          <div className="px-20 py-8 text-white flex justify-between">
-            <div className="flex items-center gap-4">
+          <div className="px-4 sm:px-8 md:px-12 lg:px-20 py-4 sm:py-6 md:py-8 text-white flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               {/* <div className="flex items-center justify-center"> */}
-                <Zap className="w-8 h-8" />
+                <Zap className="w-6 h-6 sm:w-8 sm:h-8" />
               {/* </div> */}
-              <h1 className="text-3xl font-bold text-center">Internet Speed Test</h1>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-center">Internet Speed Test</h1>
             </div>
           
 
@@ -383,13 +363,13 @@ const stopTest = () => {
                 <div className="text-center">
                  <button
   onClick={runSpeedTest}
-  className="text-zinc-100 hover:text-white px-8 py-3 rounded-full font-semibold 
+  className="text-zinc-100 hover:text-white px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-full font-semibold text-sm sm:text-base
              transition-all inline-flex items-center gap-2 
              focus:outline-none focus:ring-0 focus:border-none 
              ring-1 ring-gray-950 hover:bg-[rgba(3,7,18,0.5)] active:ring-0"
 >
 
-                    <RefreshCw className="w-4 h-4" />
+                    <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4" />
                     Retry
                   </button>
                 </div>
@@ -398,12 +378,12 @@ const stopTest = () => {
                 <div className="text-center">
                   <button
                     onClick={stopTest}
-                    className="text-zinc-100 hover:text-white px-8 py-3 rounded-full font-semibold 
+                    className="text-zinc-100 hover:text-white px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-full font-semibold text-sm sm:text-base
              transition-all inline-flex items-center gap-2 
              focus:outline-none focus:ring-0 focus:border-none 
              ring-1 ring-gray-950 hover:bg-[rgba(3,7,18,0.5)] active:ring-0"
                   >
-                    <Pause className="w-4 h-4" />
+                    <Pause className="w-3 h-3 sm:w-4 sm:h-4" />
                     Stop
                   </button>
                 </div>))}
@@ -413,20 +393,20 @@ const stopTest = () => {
 
       
 
-          <div className="h-full flex items-center justify-center flex-1">
-            {!loading && !speedData && (
+          <div className="h-full flex items-center justify-center flex-1 px-4 sm:px-6 md:px-8">
+            {!loading && !speedData && !error && (
               
                 <div className='text-center'>
                   <button
                     onClick={runSpeedTest}
-                    className="text-zinc-100 hover:text-white px-8 py-3 rounded-full font-semibold 
+                    className="text-zinc-100 hover:text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-semibold text-sm sm:text-base
               transition-all inline-flex items-center gap-2 
               focus:outline-none focus:ring-0 focus:border-none 
               ring-1 ring-gray-950 hover:bg-[rgba(3,7,18,0.5)] active:ring-0 shadow-lg"
                   >
                     Start Test
                   </button>
-                  <p className="text-gray-500 text-sm mt-4">
+                  <p className="text-gray-500 text-xs sm:text-sm mt-4">
                     Testing with Cloudflare&apos;s global CDN
                   </p>
 
@@ -435,10 +415,10 @@ const stopTest = () => {
             )}
 
             {loading && (
-              <div className="space-y-6 py-8">
+              <div className="space-y-4 sm:space-y-6 py-4 sm:py-8 w-full max-w-6xl">
                 
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   <RadialGauge
                     value={parseFloat(currentDownload)}
                     maxValue={100}
@@ -468,9 +448,9 @@ const stopTest = () => {
             )}
 
             {speedData && !loading && (
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6 w-full max-w-6xl">
                 {/* Radial Gauge Display */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
                   <RadialGauge
                     value={parseFloat(speedData.downloadSpeed)}
                     maxValue={100}
@@ -497,11 +477,11 @@ const stopTest = () => {
                   />
                 </div>
 
-                <div className="bg-zinc-900 p-4 rounded-xl outline-1 outline-white">
-                  <p className="text-sm text-gray-300">
+                <div className="bg-zinc-900 p-3 sm:p-4 rounded-xl outline-1 outline-white">
+                  <p className="text-xs sm:text-sm text-gray-300">
                     <span className="font-semibold">Server:</span> {speedData.server}
                   </p>
-                  <p className="text-sm text-gray-300">
+                  <p className="text-xs sm:text-sm text-gray-300">
                     <span className="font-semibold">Method:</span> {speedData.method}
                   </p>
                 </div>
@@ -510,15 +490,19 @@ const stopTest = () => {
               </div>
             )}
 
-            {error && (
-              <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6 text-center">
-                <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
-                <p className="text-red-800 font-semibold mb-2">Test Failed</p>
-                <p className="text-red-600 text-sm mb-4">{error}</p>
+            {!speedData && !loading && error && (
+              <div className="text-center px-4">
+                
+                <p className="text-red-800 font-semibold mb-2 text-sm sm:text-base">Test Failed</p>
+                <p className="text-red-600 text-xs sm:text-sm mb-4">{error}</p>
                 <button
                   onClick={runSpeedTest}
-                  className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition-all"
+                  className="text-zinc-100 hover:text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-semibold text-sm sm:text-base
+             transition-all inline-flex items-center gap-2 
+             focus:outline-none focus:ring-0 focus:border-none 
+             ring-1 ring-gray-950 hover:bg-[rgba(3,7,18,0.5)] active:ring-0"
                 >
+                <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />
                   Try Again
                 </button>
               </div>
