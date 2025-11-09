@@ -255,7 +255,17 @@ export const TOOLS: Tool[] = [
     icon: "📡",
     href: "/tools/advanced/speedtest",
     tags: ["speed", "internet", "network", "bandwidth", "download", "upload", "ping"],
-    featured: true,
+    featured: false,
+  },
+  {
+    id: "typetest",
+    name: "Typing Speed Test",
+    description: "Measure your typing speed and accuracy with customizable difficulty levels",
+    category: "advanced",
+    icon: "⌨️",
+    href: "/tools/advanced/typetest",
+    tags: ["typing", "speed", "wpm", "accuracy", "keyboard", "practice"],
+    featured: false,
   },
   {
     id: "currency-converter",

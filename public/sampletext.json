@@ -1,0 +1,53 @@
+{
+  "easy": {
+    "short": [
+      "The quick brown fox jumps over the lazy dog. This sentence contains every letter of the alphabet. Practice makes perfect when learning to type faster.",
+      "Typing is a skill that improves with practice. Start with simple words and gradually increase your speed. Remember to maintain good posture while typing.",
+      "Learning to type without looking at the keyboard is important. Focus on accuracy first, then build up your speed. Regular practice will help you improve."
+    ],
+    "medium": [
+      "The quick brown fox jumps over the lazy dog. This sentence contains every letter of the alphabet. Practice makes perfect when learning to type faster. Typing is an essential skill in today's digital world. With regular practice, anyone can improve their typing speed and accuracy.",
+      "In the modern workplace, typing skills are essential for productivity. Email communication, document creation, and data entry all require efficient typing. Developing muscle memory through consistent practice will help you type faster without thinking about each key.",
+      "Touch typing is the ability to type without looking at the keyboard. This skill allows you to focus on your thoughts rather than finding keys. Most professional typists can achieve speeds of 60 to 80 words per minute with regular practice and proper technique."
+    ],
+    "long": [
+      "The quick brown fox jumps over the lazy dog. This sentence contains every letter of the alphabet. Practice makes perfect when learning to type faster. Typing is an essential skill in today's digital world. With regular practice, anyone can improve their typing speed and accuracy. Good posture and proper finger placement on the keyboard are fundamental to efficient typing. Start slowly and focus on accuracy before trying to increase your speed.",
+      "Learning to touch type is one of the most valuable skills you can develop in the digital age. Whether you're writing emails, creating documents, or chatting with friends, typing is something you do every day. The key to becoming a fast and accurate typist is consistent practice and proper technique. Begin by learning the home row keys and gradually expand to include all keys on the keyboard. Remember that accuracy is more important than speed when you're starting out.",
+      "The benefits of touch typing extend beyond just speed. When you can type without looking at the keyboard, you can maintain better eye contact during video calls, catch errors more quickly while writing, and reduce the physical strain on your neck and shoulders. Professional typists recommend practicing for at least 15 minutes each day to build and maintain your skills. Over time, your fingers will develop muscle memory, making typing feel natural and effortless."
+    ]
+  },
+  "medium": {
+    "short": [
+      "Technology has revolutionized the way we communicate and work. From smartphones to cloud computing, digital tools have become integral to our daily lives.",
+      "Artificial intelligence is transforming industries worldwide. Machine learning algorithms can now recognize patterns, make predictions, and automate complex tasks that once required human intelligence.",
+      "Cybersecurity has become increasingly important as our lives move online. Protecting sensitive data requires strong passwords, multi-factor authentication, and awareness of potential threats."
+    ],
+    "medium": [
+      "Technology has revolutionized the way we communicate and work. From smartphones to cloud computing, digital tools have become integral to our daily lives. The internet connects billions of people worldwide, enabling instant communication and access to vast amounts of information. Social media platforms have transformed how we share ideas and stay connected with friends and family.",
+      "Climate change represents one of the greatest challenges facing humanity today. Rising global temperatures are causing ice caps to melt, sea levels to rise, and weather patterns to become more extreme. Scientists worldwide are working on solutions including renewable energy, carbon capture, and sustainable agriculture to mitigate these effects.",
+      "The human brain is an incredibly complex organ capable of processing vast amounts of information simultaneously. Neuroplasticity allows our brains to form new neural connections throughout our lives, enabling us to learn new skills and adapt to changing environments. Understanding how the brain works can help us optimize learning and improve cognitive function."
+    ],
+    "long": [
+      "Technology has revolutionized the way we communicate and work. From smartphones to cloud computing, digital tools have become integral to our daily lives. The internet connects billions of people worldwide, enabling instant communication and access to vast amounts of information. Social media platforms have transformed how we share ideas and stay connected with friends and family. Artificial intelligence and machine learning are pushing the boundaries of what's possible, from autonomous vehicles to personalized recommendations. As technology continues to evolve, it's crucial to develop strong digital literacy skills to navigate this ever-changing landscape effectively.",
+      "The exploration of space has captivated human imagination for centuries. From the first satellite launches to landing humans on the moon, space exploration has driven technological innovation and expanded our understanding of the universe. Today, private companies are working alongside government agencies to make space travel more accessible. The International Space Station serves as a laboratory for scientific research in microgravity, while rovers explore the surface of Mars searching for signs of past life. Looking forward, plans for lunar bases and eventual missions to Mars represent the next frontier in human space exploration.",
+      "Sustainable development requires balancing economic growth with environmental protection and social equity. As the global population continues to grow, we must find ways to meet present needs without compromising future generations. This involves transitioning to renewable energy sources, implementing circular economy principles, and protecting biodiversity. Cities are adopting green infrastructure, companies are committing to carbon neutrality, and individuals are making more conscious consumption choices. Education and innovation play crucial roles in developing solutions to environmental challenges while ensuring prosperity for all."
+    ]
+  },
+  "hard": {
+    "short": [
+      "Quantum mechanics fundamentally challenges our classical intuitions about reality. Superposition and entanglement demonstrate phenomena that seem paradoxical yet are experimentally verified.",
+      "Neuroplasticity reveals the brain's remarkable capacity for reorganization throughout life. Synaptic connections strengthen or weaken based on experience, enabling continuous learning and adaptation.",
+      "Cryptographic algorithms ensure secure communication in the digital age. Public-key infrastructure relies on mathematical problems that are computationally infeasible to solve without proper keys."
+    ],
+    "medium": [
+      "Quantum mechanics fundamentally challenges our classical intuitions about reality. Superposition and entanglement demonstrate phenomena that seem paradoxical yet are experimentally verified. The Copenhagen interpretation suggests that particles exist in probabilistic states until observed. Meanwhile, quantum computing leverages these principles to perform calculations exponentially faster than classical computers for specific problems.",
+      "Epigenetics examines how environmental factors influence gene expression without altering DNA sequences. Methylation and histone modification can activate or silence genes, affecting phenotype across generations. This field bridges nature and nurture, revealing how lifestyle choices may impact descendants through heritable epigenetic markers.",
+      "Blockchain technology enables decentralized consensus through cryptographic verification and distributed ledger systems. Each block contains transaction data, timestamps, and cryptographic hashes linking to previous blocks. This architecture provides transparency and immutability, revolutionizing applications beyond cryptocurrency including supply chain management and digital identity verification."
+    ],
+    "long": [
+      "Quantum mechanics fundamentally challenges our classical intuitions about reality. Superposition and entanglement demonstrate phenomena that seem paradoxical yet are experimentally verified. The Copenhagen interpretation suggests that particles exist in probabilistic states until observed. Meanwhile, quantum computing leverages these principles to perform calculations exponentially faster than classical computers for specific problems. Researchers are exploring quantum cryptography for unhackable communication systems. The philosophical implications of quantum theory continue to spark debates about determinism, causality, and the nature of observation itself.",
+      "The human genome project revolutionized our understanding of genetics and heredity. Sequencing all three billion base pairs of human DNA has enabled personalized medicine, where treatments can be tailored to individual genetic profiles. CRISPR-Cas9 gene editing technology allows precise modifications to DNA sequences, offering potential cures for genetic disorders. However, these advances raise ethical questions about genetic enhancement, designer babies, and the limits of human intervention in natural processes. Regulatory frameworks struggle to keep pace with rapidly evolving biotechnology capabilities.",
+      "String theory proposes that fundamental particles are not point-like objects but tiny vibrating strings. Different vibrational patterns correspond to different particles, potentially unifying quantum mechanics and general relativity. The theory requires additional spatial dimensions beyond the familiar three, which are compactified at scales too small to observe directly. While mathematically elegant, string theory faces criticism for lack of experimental falsifiability. Alternative approaches like loop quantum gravity offer competing frameworks for quantum descriptions of spacetime. These theoretical developments push the boundaries of human understanding regarding the universe's fundamental nature."
+    ]
+  }
+}
