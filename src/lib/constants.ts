@@ -102,6 +102,16 @@ export const TOOLS: Tool[] = [
 
   // Code & API Tools
   {
+    id: "fetch-curl",
+    name: "cURL ⇄ Fetch Converter",
+    description: "Convert between cURL commands and JavaScript fetch requests with FormData support",
+    category: "code",
+    icon: "🔄",
+    href: "/tools/code/fetch-curl",
+    tags: ["curl", "fetch", "api", "convert", "formdata", "http"],
+    featured: false,
+  },
+  {
     id: "figma-to-code",
     name: "Figma to Next.js Code",
     description: "Extract Figma designs and convert to ready-to-use React/Tailwind components with asset URLs",
@@ -149,16 +159,6 @@ export const TOOLS: Tool[] = [
     icon: "✨",
     href: "/tools/code/prettifier",
     tags: ["format", "pretty", "beautify", "json", "xml", "html", "css", "csv"],
-    featured: false,
-  },
-  {
-    id: "fetch-curl",
-    name: "Fetch ↔ cURL",
-    description: "Convert between JavaScript fetch and cURL commands",
-    category: "code",
-    icon: "🔄",
-    href: "/tools/code/fetch-curl",
-    tags: ["fetch", "curl", "http", "api"],
     featured: false,
   },
 
