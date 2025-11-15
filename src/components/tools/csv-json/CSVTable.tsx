@@ -184,7 +184,7 @@ export function CSVTable({ headers, data, onDataChange, onHeadersChange }: CSVTa
                             type="text"
                             value={editValue}
                             onChange={e => setEditValue(e.target.value)}
-                            className="px-2 py-1 border border-blue-500 rounded text-xs flex-1"
+                            className="px-2 py-1 text-xs flex-1 outline-none"
                             autoFocus
                             onKeyDown={e => {
                               if (e.key === 'Enter') saveHeaderEdit(colIdx);
@@ -264,7 +264,7 @@ export function CSVTable({ headers, data, onDataChange, onHeadersChange }: CSVTa
                           value={editValue}
                           onChange={e => setEditValue(e.target.value)}
                           onBlur={() => saveCellEdit(rowIdx, header)}
-                          className="px-2 py-1 border border-blue-500 rounded text-xs flex-1"
+                          className="px-2 py-1 outline-none rounded-sm text-sm flex-1"
                           autoFocus
                           onKeyDown={e => {
                             if (e.key === 'Enter') saveCellEdit(rowIdx, header);

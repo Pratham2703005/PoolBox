@@ -25,10 +25,10 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
       <div className="flex items-center gap-3">
         <div className="text-2xl">{categoryInfo.icon}</div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-xl font-bold text-white">
             {categoryInfo.name}
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-400">
             {categoryInfo.description}
           </p>
         </div>

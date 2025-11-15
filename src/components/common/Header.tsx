@@ -20,21 +20,39 @@ export const Header: React.FC = () => {
             </div>
           </Link>
 
-          {/* Links */}
+          {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-6">
             <Link
-              href="https://pratham-potfolio.vercel.app"
+              href="/"
               className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
             >
-              About Me
+              Tools
+            </Link>
+            <Link
+              href="/docs"
+              className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+            >
+              Docs
+            </Link>
+            <Link
+              href="/apis"
+              className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+            >
+              APIs
+            </Link>
+            <Link
+              href="/about"
+              className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+            >
+              About
             </Link>
             <a
-              href="https://github.com/Pratham2703005"
+              href="https://github.com/Pratham2703005/PoolBox"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+              className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
             >
-              GitHub
+              <FaGithub className="w-5 h-5" />
             </a>
           </nav>
 

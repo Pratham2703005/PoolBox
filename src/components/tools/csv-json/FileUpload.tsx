@@ -107,7 +107,7 @@ export function FileUpload({
   };
 
   return (
-    <div className="rounded-lg bg-gray-700 overflow-hidden">
+    <div className="rounded-lg bg-gray-950/50 overflow-hidden">
       {uploadedFile ? (
         // Uploaded File Display
         <div className="p-6">
@@ -116,8 +116,8 @@ export function FileUpload({
               <FiFileText className="text-blue-600" size={24} />
             </div>
             <div className="flex-1">
-              <p className="font-medium text-gray-800">{uploadedFile.name}</p>
-              <p className="text-sm text-gray-500">
+              <p className="font-medium text-gray-100">{uploadedFile.name}</p>
+              <p className="text-sm text-gray-400">
                 {(uploadedFile.size / 1024).toFixed(2)} KB
               </p>
             </div>

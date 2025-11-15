@@ -68,14 +68,14 @@ export default function Home() {
   const isFiltering = searchQuery || selectedCategory;
   const mounted = useIsMounted();
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
+    <div className="min-h-screen bg-gray-950">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
             Developer Toolbox
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+          <p className="text-lg text-gray-400 mb-8">
             20+ tools to supercharge your development workflow. All in one place.
           </p>
 
@@ -90,7 +90,7 @@ export default function Home() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="w-full pl-12 pr-12 py-3 rounded-lg border border-gray-300 bg-white dark:bg-gray-800 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full pl-12 pr-12 py-3 rounded-lg border  bg-gray-900/80 border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-transparent transition-all"
                 placeholder="Search tools... (e.g., jwt, csv, regex)"
                 />
               )}
@@ -112,8 +112,8 @@ export default function Home() {
               onClick={() => setSelectedCategory(null)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                 !selectedCategory
-                  ? 'bg-blue-600 text-white shadow-lg'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
+                  ? 'bg-blue-900/20 text-white shadow-lg border border-gray-500'
+                  : '   bg-gray-900/80 text-gray-200 border border-gray-500 hover:bg-gray-600'
               }`}
             >
               All Tools
@@ -124,11 +124,11 @@ export default function Home() {
                 onClick={() => setSelectedCategory(category.id)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   selectedCategory === category.id
-                    ? 'bg-blue-600 text-white shadow-lg'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
+                    ? 'bg-blue-900/20 text-white shadow-lg border border-gray-500'
+                    : ' bg-gray-900/80 text-gray-200 border border-gray-500 hover:bg-gray-600'
                 }`}
               >
-                <span className="mr-2">{category.icon}</span>
+                {/* <span className="mr-2">{category.icon}</span> */}
                 {category.name}
               </button>
             ))}

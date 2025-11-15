@@ -17,6 +17,8 @@ export interface Tool {
   featured?: boolean;
   comingSoon?: boolean;
   color?: string; // Tailwind color for category badge
+  apiAvailable?: boolean;
+  docAvailable?: boolean;
 }
 
 export interface ToolWithStarred extends Tool {

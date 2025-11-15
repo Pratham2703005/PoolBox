@@ -22,17 +22,12 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
 
   return (
     <Link href={tool.href}>
-      <div className="group relative h-full rounded-lg border border-gray-200 bg-white p-5 transition-all duration-300 hover:border-blue-300 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 hover:dark:border-blue-600 hover:dark:shadow-blue-900/20 cursor-pointer">
-        {/* Featured badge */}
-        {tool.featured && (
-          <div className="absolute -top-2 -right-2 bg-transparent text-xs font-bold px-2 py-1 rounded-full">
-            ✨
-          </div>
-        )}
+      <div className="group relative h-full rounded-lg border p-5 transition-all duration-300  hover:shadow-lg border-gray-700  hover:bg-blue-600/10 hover:shadow-blue-900/20 cursor-pointer bg-gray-900/40">
+     
 
         {/* Coming Soon badge */}
         {tool.comingSoon && (
-          <div className="absolute top-2 right-2 bg-gray-300 text-gray-700 text-xs font-semibold px-2 py-1 rounded dark:bg-gray-600 dark:text-gray-300">
+          <div className="absolute top-2 right-2 text-xs font-semibold px-2 py-1 rounded bg-gray-600 text-gray-300">
             Coming Soon
           </div>
         )}
@@ -40,7 +35,7 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
         {/* Star button */}
         <button
           onClick={handleStarClick}
-          className="absolute top-3 right-3 p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors z-10"
+          className="absolute top-3 right-3 p-1.5 rounded-full z-10"
           aria-label={starred ? 'Remove from favorites' : 'Add to favorites'}
         >
           {starred ? (
@@ -55,14 +50,14 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
           <div className="flex items-start gap-3">
             <div className="text-3xl flex-shrink-0">{tool.icon}</div>
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              <h3 className="text-sm font-semibold  text-white group-hover:text-blue-200 transition-colors">
                 {tool.name}
               </h3>
             </div>
           </div>
 
           {/* Description */}
-          <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+          <p className="text-xs text-gray-400 line-clamp-2">
             {tool.description}
           </p>
 
@@ -82,13 +77,13 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
               {tool.tags.slice(0, 2).map((tag) => (
                 <span
                   key={tag}
-                  className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded dark:bg-gray-700 dark:text-gray-300"
+                  className="text-xs  px-2 py-1 rounded bg-gray-700 text-gray-300"
                 >
                   #{tag}
                 </span>
               ))}
               {tool.tags.length > 2 && (
-                <span className="text-xs text-gray-500 dark:text-gray-400 px-2 py-1">
+                <span className="text-xs text-gray-400 px-2 py-1">
                   +{tool.tags.length - 2}
                 </span>
               )}

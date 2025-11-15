@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function Base64Page() {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-white dark:bg-gray-950">
       <div className="container max-w-6xl mx-auto px-4 py-8 sm:py-12">
         {/* Header */}
         <div className="mb-8">

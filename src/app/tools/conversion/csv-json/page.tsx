@@ -81,17 +81,17 @@ export default function CSVtoJSONConverter() {
         setJsonContent(content);
 
         try {
-                const parsed = JSON.parse(content);
-                if (Array.isArray(parsed)) {
-                    // Only update csvData when the edited JSON as string differs from current csvData
-                    const parsedStr = JSON.stringify(parsed);
-                    const currentStr = JSON.stringify(csvData);
-                    if (parsedStr !== currentStr) {
-                        setCsvData(parsed as Record<string, unknown>[]);
-                        const result = jsonToCSV(parsed as Record<string, unknown>[], { delimiter: ',' });
-                        setCsvHeaders(result.headers);
-                    }
+            const parsed = JSON.parse(content);
+            if (Array.isArray(parsed)) {
+                // Only update csvData when the edited JSON as string differs from current csvData
+                const parsedStr = JSON.stringify(parsed);
+                const currentStr = JSON.stringify(csvData);
+                if (parsedStr !== currentStr) {
+                    setCsvData(parsed as Record<string, unknown>[]);
+                    const result = jsonToCSV(parsed as Record<string, unknown>[], { delimiter: ',' });
+                    setCsvHeaders(result.headers);
                 }
+            }
         } catch {
             // Ignore parse errors here; validation is handled in the editor on blur
         }
@@ -168,9 +168,9 @@ export default function CSVtoJSONConverter() {
         <div className="min-h-screen bg-gray-950 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-4xl font-bold text-gray-100 mb-2">CSV ↔ JSON Converter</h1>
-                    <p className="text-gray-300">
+                <div className="mb-6">
+                    <h1 className="text-4xl font-bold text-gray-200 mb-2">CSV ↔ JSON Converter</h1>
+                    <p className="text-gray-200">
                         Convert between CSV and JSON with smart type detection, editing, and multiple export formats
                     </p>
                 </div>
@@ -180,29 +180,29 @@ export default function CSVtoJSONConverter() {
                     {/* Mode Selection */}
                     {hasData && (
                         <>
-                    <div className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-lg border border-gray-700">
-                        <label className="text-sm font-medium text-gray-300">View:</label>
-                        <select value={viewMode} onChange={e => setViewMode(e.target.value as ViewMode)} className="px-3 py-1 border text-gray-300 border-gray-700 rounded text-sm">
-                            <option value="split" className='text-gray-300 bg-gray-800'>Split View</option>
-                            <option value="single" className='text-gray-300 bg-gray-800 '>Single Tab</option>
-                        </select>
-                    </div>
-                    
-                        <div className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-lg border border-gray-700">
-                            <label className="text-sm font-medium text-gray-200">Export as:</label>
-                            <select value={exportFormat} onChange={e => setExportFormat(e.target.value)} className="px-3 py-1 border text-gray-300 border-gray-700 rounded text-sm">
-                                {EXPORT_FORMATS.map(fmt => (
-                                    <option className='bg-gray-800' key={fmt.id} value={fmt.id}>{fmt.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                    
-                        <div className="flex items-center gap-2 ml-auto">
-                            <button onClick={downloadConverted} className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
-                                <FiDownload size={18} />
-                                Download {exportFormat.toUpperCase()}
-                            </button>
-                        </div>
+                            <div className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-sm border border-gray-700">
+                                <label className="text-sm font-medium text-gray-300">View:</label>
+                                <select value={viewMode} onChange={e => setViewMode(e.target.value as ViewMode)} className="px-3 py-1 border text-gray-300 border-gray-700 rounded text-sm">
+                                    <option value="split" className='text-gray-300 bg-gray-800'>Split View</option>
+                                    <option value="single" className='text-gray-300 bg-gray-800 '>Single Tab</option>
+                                </select>
+                            </div>
+
+                            <div className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-sm border border-gray-700">
+                                <label className="text-sm font-medium text-gray-200">Export as:</label>
+                                <select value={exportFormat} onChange={e => setExportFormat(e.target.value)} className="px-3 py-1 border text-gray-300 border-gray-700 rounded text-sm">
+                                    {EXPORT_FORMATS.map(fmt => (
+                                        <option className='bg-gray-800' key={fmt.id} value={fmt.id}>{fmt.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="flex items-center gap-2 ml-auto">
+                                <button onClick={downloadConverted} className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                                    <FiDownload size={18} />
+                                    Download {exportFormat.toUpperCase()}
+                                </button>
+                            </div>
                         </>
                     )}
                 </div>
@@ -210,7 +210,7 @@ export default function CSVtoJSONConverter() {
                 {/* Main Content */}
                 {!hasData ? (
                     // File Upload / Blank sheet starter
-                    <div className="bg-gray-800 rounded-lg border border-gray-700 p-8">
+                    <div className="bg-[rgba(16,24,40,1)] rounded-sm border border-gray-700 p-8">
                         <div className="flex flex-col md:flex-row gap-4">
                             <div className="flex-1">
                                 <FileUpload onFileUpload={handleFileUpload} accepted={['.csv', '.json', '.txt']} maxSize={50} />
@@ -226,7 +226,7 @@ export default function CSVtoJSONConverter() {
                                         setCsvData([initRow]);
                                         setCsvDelimiter(',');
                                         setJsonContent(formatAsJSON([initRow], true));
-                                    }} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Start Blank Sheet</button>
+                                    }} className="px-4 py-2 bg-blue-600 text-white rounded-sm hover:bg-blue-700">Start Blank Sheet</button>
                                 </div>
                             </div>
                         </div>
