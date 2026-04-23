@@ -112,7 +112,7 @@ export const Footer: React.FC = () => {
             © {currentYear} Toolbox. All rights reserved.
           </p>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Made with ❤️ for developers
+            Made for Devs
           </p>
         </div>
       </div>

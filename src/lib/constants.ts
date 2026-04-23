@@ -146,6 +146,17 @@ export const TOOLS: Tool[] = [
     tags: ["format", "pretty", "beautify", "json", "xml", "html", "css", "csv"],
     featured: false,
   },
+  {
+    id: "compiler",
+    name: "Multi-Language Compiler",
+    description: "Browser-based compiler with Monaco Editor - JavaScript runs locally (no timeout), Python/Java/C/C++ via Piston API",
+    category: "code",
+    icon: "💻",
+    href: "/tools/code/compiler",
+    tags: ["compiler", "javascript", "python", "java", "c", "cpp", "monaco", "editor", "code", "execute", "run"],
+    featured: true,
+    docAvailable: true,
+  },
 
   // Development Utilities
   {

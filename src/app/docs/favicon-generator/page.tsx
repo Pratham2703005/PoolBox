@@ -4,7 +4,7 @@ import Image from 'next/image';
 export default async function FaviconGeneratorDocsPage() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
-      <div className="prose prose-gray dark:prose-invert max-w-none">
+      {/* <div className="prose prose-gray dark:prose-invert max-w-none"> */}
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
           ✨ Favicon Generator Documentation
         </h1>
@@ -219,7 +219,7 @@ export default async function FaviconGeneratorDocsPage() {
             </li>
           </ul>
         </section>
-      </div>
+      {/* </div> */}
     </div>
   );
 }
