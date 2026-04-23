@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Play, Trash2, Loader2 } from 'lucide-react';
-import Editor, { MonacoDiffEditor } from '@monaco-editor/react';
+import Editor from '@monaco-editor/react';
 
 type LanguageKey = 'javascript' | 'python' | 'java' | 'c' | 'cpp';
 
@@ -188,7 +188,7 @@ const MultiLanguageCompiler = () => {
     setOutput('');
   };
 
-  const handleEditorWillMount = (monaco: MonacoDiffEditor) => {
+  const handleEditorWillMount = (monaco: any) => {
     monaco.editor.defineTheme("oceanic-theme", {
   base: "vs-dark",
   inherit: true,
